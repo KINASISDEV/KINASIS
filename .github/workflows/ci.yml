@@ -1,0 +1,34 @@
+# CI mínimo: verifica que el monorepo instala y que el build del frontend pasa
+# antes de que Netlify lo intente. El deploy lo hace Netlify solo (no hace falta
+# ningún secreto aquí).
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+        env:
+          VITE_API_URL: /api/
+
+      - name: Check backend entrypoints
+        run: |
+          node --check kinasis-backend/src/index.js
+          node --input-type=module -e "import('./kinasis-backend/src/app.js').then(() => console.log('backend app OK'))"
+          node --input-type=module -e "import('./netlify/functions/api.mjs').then((m) => { if (typeof m.handler !== 'function') { throw new Error('handler missing'); } console.log('function handler OK'); })"

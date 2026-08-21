@@ -1,0 +1,28 @@
+{
+  "name": "kinasis-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo KINASIS: frontend (Vue + Vite) y backend (Express) desplegados juntos en Netlify",
+  "workspaces": [
+    "kinasis-frontend-web",
+    "kinasis-backend"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "netlify dev",
+    "dev:web": "npm run dev --workspace kinasis-frontend-web",
+    "dev:api": "npm run dev --workspace kinasis-backend",
+    "build": "npm run build --workspace kinasis-frontend-web",
+    "preview": "npm run preview --workspace kinasis-frontend-web",
+    "smoke": "node scripts/smoke.mjs",
+    "env:push": "netlify env:import .env"
+  },
+  "dependencies": {
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^23.9.1"
+  }
+}

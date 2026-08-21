@@ -1,0 +1,28 @@
+# deps
+node_modules/
+
+# builds
+dist/
+dist-ssr/
+kinasis-frontend-web/dist/
+
+# secretos / entorno (NUNCA subir)
+.env
+.env.*
+!.env.example
+.dev.env
+.prod.env
+
+# netlify
+.netlify/
+
+# sistema / editor
+.DS_Store
+*.log
+npm-debug.log*
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# backups de los repos git anteriores (si quedaran dentro del proyecto)
+*.git-backup/

@@ -1,0 +1,58 @@
+# ---------------------------------------------------------------------------
+# KINASIS monorepo -> un solo sitio de Netlify sirve frontend + backend.
+#
+#   Frontend : kinasis-frontend-web (Vue + Vite)  -> archivos estaticos
+#   Backend  : kinasis-backend (Express)          -> Netlify Function /api/*
+#
+# Al conectar el repo en Netlify no hay que configurar nada en la UI salvo
+# las variables de entorno secretas (ver DEPLOY.md).
+# ---------------------------------------------------------------------------
+
+[build]
+  base = "."
+  command = "npm run build"
+  publish = "kinasis-frontend-web/dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NPM_FLAGS = "--include=dev"
+  # El frontend habla con el backend en el MISMO dominio -> sin CORS, sin
+  # dominios hardcodeados. Funciona igual en produccion, deploy previews y local.
+  VITE_API_URL = "/api/"
+
+[functions]
+  node_bundler = "esbuild"
+  # mongoose/mongodb tienen requires opcionales (kerberos, snappy, etc.) que
+  # esbuild no puede empaquetar: se copian como node_modules en lugar de bundlear.
+  external_node_modules = ["mongoose"]
+
+[functions."api"]
+  included_files = ["kinasis-backend/src/**"]
+
+# --- API: todo /api/* entra al Express del backend ------------------------
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# --- SPA fallback: cualquier otra ruta la resuelve vue-router -------------
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# --- `netlify dev` (local): frontend en Vite + funciones + redirects ------
+[dev]
+  command = "npm run dev:web"
+  targetPort = 5173
+  port = 8888
+  framework = "#custom"
+  publish = "kinasis-frontend-web/dist"
+  autoLaunch = false
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
