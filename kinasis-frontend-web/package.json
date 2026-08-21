@@ -1,0 +1,27 @@
+{
+  "name": "kinasis-official-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "animejs": "^4.3.6",
+    "motion": "^12.35.2",
+    "motion-v": "^2.0.0",
+    "vue": "^3.5.29",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.4",
+    "vite": "^7.3.1",
+    "vite-plugin-vue-devtools": "^8.0.6"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}
